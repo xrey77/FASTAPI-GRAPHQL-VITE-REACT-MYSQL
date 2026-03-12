@@ -8,7 +8,6 @@ from starlette.responses import RedirectResponse
 from starlette.middleware.cors import CORSMiddleware
 
 #GrapQL
-
 from strawberry.fastapi import GraphQLRouter
 from app.graphql.schema import schema
 
@@ -29,6 +28,8 @@ from app.models.model import User
 from app.models.model import Product
 from sqlalchemy import create_engine, MetaData
 
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent
 def create_all_tables():
     Base.metadata.create_all(bind=engine)
 
@@ -49,7 +50,6 @@ graphql_app = GraphQLRouter(
 )
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(graphql_app, prefix="/graphql")
 
 origins = ['*']
 
@@ -61,11 +61,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_index(request: Request):
@@ -86,6 +83,8 @@ async def serve_image(image: str) -> dict:
 async def serve_image(image: str) -> dict:
     img = "static/products/"+image
     return FileResponse(img)
+
+app.include_router(graphql_app, prefix="/graphql")
 
 # app.include_router(login.router)
 # app.include_router(register.router)
