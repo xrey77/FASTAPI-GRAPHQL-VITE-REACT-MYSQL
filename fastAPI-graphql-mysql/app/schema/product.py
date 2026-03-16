@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict, condecimal
-from typing import Optional, List
+from typing import Optional
 from decimal import Decimal
 from typing import Annotated
 
@@ -20,4 +20,4 @@ class ProductSchema(BaseModel):
     updated_at: datetime | None = Field(None, description="Timestamp of last update")
 
     class Config:
-        from_attributes = True # Enables Pydantic to read ORM models
+        from_attributes = True

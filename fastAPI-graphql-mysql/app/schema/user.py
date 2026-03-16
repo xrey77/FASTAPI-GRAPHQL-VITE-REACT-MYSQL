@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List
+from typing import Optional
 
 class UserSchema(BaseModel):
     id: int
@@ -21,4 +21,4 @@ class UserSchema(BaseModel):
     updated_at: datetime | None = Field(None, description="Timestamp of last update")
 
     class Config:
-        from_attributes = True # Enables Pydantic to read ORM models
+        from_attributes = True
