@@ -2,9 +2,13 @@
 import uvicorn
 import os
 from dotenv import load_dotenv
+
 #Auth Guard
 from fastapi import Request, Response, Depends
 from app.core.security import decode_token
+from fastapi import Request, HTTPException
+from fastapi.responses import JSONResponse
+
 
 from fastapi import FastAPI, Request, Depends
 from fastapi.staticfiles import StaticFiles
@@ -15,6 +19,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 #GrapQL
 from strawberry.fastapi import GraphQLRouter
+from graphql import GraphQLError
 from app.graphql.schema import schema
 
 # for templates
@@ -46,15 +51,10 @@ async def lifespan(app: FastAPI):
 async def get_context(db=Depends(get_db)):
     return {"db": db}
 
-
-# GraphQL
-graphql_app = GraphQLRouter(
-    schema, 
-    context_getter=get_context, 
-    multipart_uploads_enabled=True
-)
-
 app = FastAPI(lifespan=lifespan)
+
+
+
 
 origins = ['http://localhost:5173', 'http://127.0.0.1:5173']
 app.add_middleware(
@@ -96,18 +96,16 @@ async def get_context(
     auth_header = request.headers.get("Authorization")
     user = None
     auth_error = None
-    
+
     if auth_header and auth_header.startswith("Bearer "):
         try:
             token = auth_header.split(" ")[1]
-            payload = decode_token(token)
+            payload = decode_token(token)            
             user_id = payload.get("sub")
-            
             result = await db.execute(select(User).where(User.email == user_id))
             user = result.scalars().first()
         except Exception as e:
             auth_error = f"Token Error: {str(e)}"
-
     return {
         "request": request,
         "response": response,
@@ -116,9 +114,26 @@ async def get_context(
         "auth_error": auth_error 
     }
 
+# @app.middleware("http")
+# async def block_missing_auth(request: Request, call_next):
+#     if request.url.path == "/graphql" and request.method == "POST":
+#         if not request.headers.get("Authorization"):
+#             return JSONResponse(
+#                 status_code=401,
+#                 content={"errors": [{"message": "Token is required."}]}
+#             )
+#     return await call_next(request)
+
+# async def get_context(request: Request):
+#     return {
+#         "request": request,
+#         "user": getattr(request.state, "user",), 
+#     }
+
 graphql_app = GraphQLRouter(
-    schema,
-    context_getter=get_context
+    schema, 
+    context_getter=get_context, 
+    multipart_uploads_enabled=True
 )
 
 app.include_router(graphql_app,prefix="/graphql")

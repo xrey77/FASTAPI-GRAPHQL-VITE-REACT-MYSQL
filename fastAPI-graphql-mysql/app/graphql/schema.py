@@ -1,5 +1,6 @@
 from __future__ import annotations  
 from typing import List
+from app.core.isAuthenticated import IsAuthenticated
 import strawberry
 from app.domains.queries.getusers.allusers import UserQuery
 from app.domains.queries.getuserid.user import get_userid
@@ -43,7 +44,7 @@ from app.domains.mutations.uploadprofilepic.userpicture_resolver import upload_p
 
 @strawberry.type
 class Query:
-   users: List[UserType] = strawberry.field(resolver=UserQuery.get_users)
+   users: List[UserType] = strawberry.field(permission_classes=[IsAuthenticated], resolver=UserQuery.get_users)
    user: UserType = strawberry.field(resolver=get_userid)
    product_list: ProductListResponse = strawberry.field(resolver=product_list)
    product_search: ProductSearchResponse = strawberry.field(resolver=product_search)

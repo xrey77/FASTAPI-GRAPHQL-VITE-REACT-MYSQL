@@ -1,19 +1,19 @@
 from __future__ import annotations  
 from typing import List
 import strawberry
+# from app.core.isAuthenticated import IsAuthenticated
 from app.core.db import get_db
 from strawberry.types import Info
 from app.models.user import User
 from app.domains.queries.getusers.types import UserType, RoleType
 from sqlalchemy.future import select
-from app.core.isAuthenticated import IsAuthenticated
 
 @strawberry.type
 class UserQuery:    
-    @strawberry.field(permission_classes=[IsAuthenticated])
+
+    # @strawberry.field(permission_classes=[IsAuthenticated])
     def get_users(info: Info) -> List["UserType"]:
         db = info.context["db"] 
-        
         user_records = db.query(User).all() 
 
         return [

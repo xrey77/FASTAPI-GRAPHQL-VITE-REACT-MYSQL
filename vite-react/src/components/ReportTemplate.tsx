@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const baseUrl = 'http://localhost:5173';
+const baseUrl = 'http://127.0.0.1:8000';
 
 export const ReportTemplate = ({ products }: { products: any[] }) => (
   <Document>
@@ -26,7 +26,7 @@ export const ReportTemplate = ({ products }: { products: any[] }) => (
       <View style={styles.headerContainer}>
         <View>
         <Image 
-          src={`${baseUrl}/images/logo.png`}
+          src={`${baseUrl}/static/images/logo.png`}
           style={styles.logo} 
         />
 

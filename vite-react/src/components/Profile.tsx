@@ -36,16 +36,16 @@ export default function Profile() {
 
     const [getUser] = useLazyQuery<GetUserIdData, GetUserIdVariables>(GETUSERID_QUERY);
 
-    const fetchUserData = async (idno: number, _tokenid: any) => {
+    const fetchUserData = async (idno: number, tokenid: any) => {
         
         try {
             const { data } = await getUser({ 
-                variables: { id: idno }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${tokenid}`,
-                //     },
-                // },
+                variables: { id: idno },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${tokenid}`,
+                    },
+                },
             });
             if (data?.user) {
                 setLname(data.user.lastname);
@@ -96,12 +96,12 @@ export default function Profile() {
         try {
             await updateProfile({
                 variables: {input: { id: userid, firstname: fname, lastname: lname, mobile: mobile }
-                }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${token}`,
-                //     },
-                // },
+                },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             });
         } catch (err: any) {
             setTimeout(() => { setProfileMsg(''); }, 3000);
@@ -267,12 +267,12 @@ export default function Profile() {
             await UpdatePasswordResponse({
                 variables: {
                     input: { id: userid,  password: newpassword }
-                }
-                // context: {
-                //     headers: {
-                //         Authorization: `Bearer ${token}`,
-                //     },
-                // },
+                },
+                context: {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
             });
         } catch (err: any) {
             setTimeout(() => { setProfileMsg(''); }, 3000);

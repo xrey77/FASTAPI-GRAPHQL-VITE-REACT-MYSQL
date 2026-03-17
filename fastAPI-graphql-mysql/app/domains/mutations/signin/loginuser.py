@@ -4,7 +4,7 @@ from sqlalchemy.future import select
 from app.models.user import User
 from app.domains.queries.getusers.types import UserType
 from app.domains.mutations.signin.inputs import LoginInput
-from .auth import verify_password, create_access_token
+from app.core.JWTManager import verify_password, create_access_token
 from graphql import GraphQLError
 from app.core.hashing import Hasher
 from app.domains.queries.getusers.types import UserType, RoleType

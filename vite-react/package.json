@@ -20,6 +20,7 @@
     "apollo-upload-client": "^19.0.0",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
+    "buffer": "^6.0.3",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "graphql": "^16.13.1",
